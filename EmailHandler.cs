@@ -6,11 +6,14 @@ namespace Email
 {
     public class EmailHandler: BackgroundWorker
     {
-        public const string email_sender = "submissions@masgau.org";
-        public const string email_password = "0WCM;i$N";
+        private readonly string server;
+        private readonly string email_sender;
+        private readonly string email_password;
 
-        public EmailHandler() {
-
+        public EmailHandler(string server, string login, string password) {
+            this.server = server;
+            email_sender = login;
+            email_password = password;
         }
 
         public void checkAvailability(RunWorkerCompletedEventHandler target) {
@@ -23,7 +26,7 @@ namespace Email
         private void checkAvailability(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
             try {
-                System.Net.Sockets.TcpClient clnt=new System.Net.Sockets.TcpClient("smtp.gmail.com",587);
+                System.Net.Sockets.TcpClient clnt=new System.Net.Sockets.TcpClient(server,587);
                 clnt.Close();
                 email_available = true;
             } catch {
@@ -46,7 +49,7 @@ namespace Email
 
         private void sendEmail(object sender, System.ComponentModel.DoWorkEventArgs e) {
             MailMessage mail = new MailMessage();
-            mail.From = new MailAddress(email_sender, "MASGAU Submission");
+            mail.From = new MailAddress(email_sender);
 
             mail.To.Add(to);
             mail.Subject = title;
@@ -61,7 +64,7 @@ namespace Email
             mail.Priority = MailPriority.High;
             mail.Headers.Add("Disposition-Notification-To", "<" + email_sender + ">");
             // mail.Attachments.Add(Server.MapPath("/"));
-            SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587)
+            SmtpClient smtp = new SmtpClient(server, 587)
             {
                 Credentials = new System.Net.NetworkCredential(email_sender, email_password),
                 EnableSsl = true

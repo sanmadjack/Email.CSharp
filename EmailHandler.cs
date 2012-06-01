@@ -7,10 +7,14 @@ namespace Email {
         private readonly string email_sender;
         private readonly string email_password;
 
-        public EmailHandler(string server, string login, string password) {
+        public EmailHandler(string server, string login, string password,
+            string from, string to, string reply_to) {
             this.server = server;
             email_sender = login;
             email_password = password;
+            this.from = from;
+            this.to = to;
+            this.reply_to = reply_to;
         }
 
         public void checkAvailability(RunWorkerCompletedEventHandler target) {
@@ -31,12 +35,9 @@ namespace Email {
         }
 
         private string from, to, reply_to, body, title;
-        public void sendEmail(string new_from, string new_to, string new_reply_to, string new_title, string new_body, RunWorkerCompletedEventHandler target) {
+        public void sendEmail(string new_title, string new_body, RunWorkerCompletedEventHandler target) {
             this.DoWork += new System.ComponentModel.DoWorkEventHandler(sendEmail);
             RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(target);
-            from = new_from;
-            to = new_to;
-            reply_to = new_reply_to;
             body = new_body;
             title = new_title;
             this.RunWorkerAsync();
@@ -67,11 +68,11 @@ namespace Email {
             smtp.Send(mail);
         }
         public static bool validateEmailAddress(string email) {
-            if (email.Contains("@"))
-                return true;
-            else
-                return false;
-
+            if (email.Contains("@")) {
+//                if (email.Split('@', 2)[1].Contains("."))
+                    return true;
+            }
+            return false;
         }
     }
 }

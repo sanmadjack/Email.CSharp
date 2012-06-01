@@ -41,17 +41,12 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AEmailConfig.cs" />
     <Compile Include="EmailHandler.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Config\Config.csproj">
-      <Project>{8176F259-FA07-4CA5-943D-4AA31D5FB857}</Project>
-      <Name>Config</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MVC\MVC.csproj">
       <Project>{4670BE82-DDDF-4614-BE3B-FB5DE4226D93}</Project>
       <Name>MVC</Name>

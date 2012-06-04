@@ -2,7 +2,7 @@
 using System.Net.Mail;
 
 namespace Email {
-    public class EmailHandler : BackgroundWorker {
+    public class EmailHandler {
         private readonly string server;
         private readonly string email_sender;
         private readonly string email_password;
@@ -18,9 +18,10 @@ namespace Email {
         }
 
         public void checkAvailability(RunWorkerCompletedEventHandler target) {
-            this.DoWork += new System.ComponentModel.DoWorkEventHandler(checkAvailability);
-            RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(target);
-            this.RunWorkerAsync();
+            BackgroundWorker worker = new BackgroundWorker();
+            worker.DoWork += new System.ComponentModel.DoWorkEventHandler(checkAvailability);
+            worker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(target);
+            worker.RunWorkerAsync();
         }
 
         public bool email_available = false;
@@ -36,11 +37,12 @@ namespace Email {
 
         private string from, to, reply_to, body, title;
         public void sendEmail(string new_title, string new_body, RunWorkerCompletedEventHandler target) {
-            this.DoWork += new System.ComponentModel.DoWorkEventHandler(sendEmail);
-            RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(target);
+            BackgroundWorker worker = new BackgroundWorker();
+            worker.DoWork += new System.ComponentModel.DoWorkEventHandler(sendEmail);
+            worker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(target);
             body = new_body;
             title = new_title;
-            this.RunWorkerAsync();
+            worker.RunWorkerAsync();
 
         }
 

@@ -41,9 +41,7 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EmailHandler.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="EmailHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

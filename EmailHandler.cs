@@ -1,20 +1,14 @@
-﻿using System.ComponentModel;
-using System.Net.Mail;
-
+﻿using System;
+using System.ComponentModel;
+using System.Collections.Generic;
+using System.Net;
+using System.Net.NetworkInformation;
+using ActiveUp.Net.Mail;
 namespace Email {
     public class EmailHandler {
-        private readonly string server;
-        private readonly string email_sender;
-        private readonly string email_password;
-
-        public EmailHandler(string server, string login, string password,
-            string from, string to, string reply_to) {
-            this.server = server;
-            email_sender = login;
-            email_password = password;
+        public EmailHandler(string from, string to) {
             this.from = from;
             this.to = to;
-            this.reply_to = reply_to;
         }
 
         public void checkAvailability(RunWorkerCompletedEventHandler target) {
@@ -24,18 +18,17 @@ namespace Email {
             worker.RunWorkerAsync();
         }
 
-        public bool email_available = false;
-        private void checkAvailability(object sender, System.ComponentModel.DoWorkEventArgs e) {
+        public void checkAvailability(object sender, System.ComponentModel.DoWorkEventArgs e) {
             try {
-                System.Net.Sockets.TcpClient clnt = new System.Net.Sockets.TcpClient(server, 587);
+                System.Net.Sockets.TcpClient clnt = new System.Net.Sockets.TcpClient("smtp.gmail.com", 587);
                 clnt.Close();
-                email_available = true;
+                e.Result = EmailResponse.ServerReachable;
             } catch {
-                email_available = false;
+                e.Result = EmailResponse.ServerUnreachable;
             }
         }
 
-        private string from, to, reply_to, body, title;
+        private string from, to, body, title;
         public void sendEmail(string new_title, string new_body, RunWorkerCompletedEventHandler target) {
             BackgroundWorker worker = new BackgroundWorker();
             worker.DoWork += new System.ComponentModel.DoWorkEventHandler(sendEmail);
@@ -47,27 +40,23 @@ namespace Email {
         }
 
         private void sendEmail(object sender, System.ComponentModel.DoWorkEventArgs e) {
-            MailMessage mail = new MailMessage();
-            mail.From = new MailAddress(email_sender);
+            Message mail = new Message();
+            mail.From = new Address(from);
+            mail.To.Add(new Address(to,"GameSave.Info Submissions"));
 
-            mail.To.Add(to);
             mail.Subject = title;
-            mail.ReplyToList.Add(new MailAddress(from));
 
-            //AlternateView planview = AlternateView.CreateAlternateViewFromString("This is my plain text content, viewable tby those clients that don't support html");
-            //AlternateView htmlview = AlternateView.CreateAlternateViewFromString("<b>This is bold text and viewable by those mail clients that support html<b>");
-            // mail.AlternateViews.Add(planview);
-            //  mail.AlternateViews.Add(htmlview);
+            mail.Priority = MessagePriority.Normal;
 
-            mail.IsBodyHtml = false;
-            mail.Priority = MailPriority.High;
-            mail.Headers.Add("Disposition-Notification-To", "<" + email_sender + ">");
+
+//            mail.Headers.Add("Disposition-Notification-To", "<" + email_sender + ">");
             // mail.Attachments.Add(Server.MapPath("/"));
-            SmtpClient smtp = new SmtpClient(server, 587) {
-                Credentials = new System.Net.NetworkCredential(email_sender, email_password),
-                EnableSsl = true
-            };
-            smtp.Send(mail);
+
+            SmtpClient.DirectSend(mail);
+
+            throw new NotSupportedException("CHECK THE EMAIL SYSTEM");
+
+            e.Result = EmailResponse.EmailSent;
         }
         public static bool validateEmailAddress(string email) {
             if (email.Contains("@")) {

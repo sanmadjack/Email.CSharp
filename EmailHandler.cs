@@ -42,19 +42,21 @@ namespace Email {
         private void sendEmail(object sender, System.ComponentModel.DoWorkEventArgs e) {
             Message mail = new Message();
             mail.From = new Address(from);
-            mail.To.Add(new Address(to,"GameSave.Info Submissions"));
+            mail.To.Add(new Address(to));
 
             mail.Subject = title;
 
             mail.Priority = MessagePriority.Normal;
 
+            MimeBody body = new MimeBody(BodyFormat.Text);
+            body.Text = this.body;
+            mail.BodyText = body;
 
-//            mail.Headers.Add("Disposition-Notification-To", "<" + email_sender + ">");
+//            mail  .Headers.Add("Disposition-Notification-To", "<" + email_sender + ">");
             // mail.Attachments.Add(Server.MapPath("/"));
 
             SmtpClient.DirectSend(mail);
 
-            throw new NotSupportedException("CHECK THE EMAIL SYSTEM");
 
             e.Result = EmailResponse.EmailSent;
         }

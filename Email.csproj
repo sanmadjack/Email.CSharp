@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="EmailHandler.cs" />
     <Compile Include="EmailResponse.cs" />
+    <Compile Include="IEmailSource.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

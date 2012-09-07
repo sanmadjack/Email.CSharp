@@ -1,8 +1,4 @@
-﻿using System;
-using System.ComponentModel;
-using System.Collections.Generic;
-using System.Net;
-using System.Net.NetworkInformation;
+﻿using System.ComponentModel;
 using ActiveUp.Net.Mail;
 namespace Email {
     public class EmailHandler {
@@ -52,7 +48,7 @@ namespace Email {
             body.Text = this.body;
             mail.BodyText = body;
 
-//            mail  .Headers.Add("Disposition-Notification-To", "<" + email_sender + ">");
+            //            mail  .Headers.Add("Disposition-Notification-To", "<" + email_sender + ">");
             // mail.Attachments.Add(Server.MapPath("/"));
 
             SmtpClient.DirectSend(mail);
@@ -62,8 +58,8 @@ namespace Email {
         }
         public static bool validateEmailAddress(string email) {
             if (email.Contains("@")) {
-//                if (email.Split('@', 2)[1].Contains("."))
-                    return true;
+                //                if (email.Split('@', 2)[1].Contains("."))
+                return true;
             }
             return false;
         }
